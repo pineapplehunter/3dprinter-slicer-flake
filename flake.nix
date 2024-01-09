@@ -52,7 +52,7 @@
       packages.x86_64-linux = {
 
         cura = realpathWrap {
-          name = "cura";
+          name = "cura5";
           package = cura5;
         };
         creality-print = realpathWrap {
