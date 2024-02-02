@@ -7,8 +7,8 @@
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
 
-      cura5 = pkgs.appimageTools.wrapType2 rec {
-        name = "cura5";
+      cura = pkgs.appimageTools.wrapType2 rec {
+        name = "cura";
         version = "5.6.0";
         src = pkgs.fetchurl {
           url = "https://github.com/Ultimaker/Cura/releases/download/${version}/UltiMaker-Cura-${version}-linux-X64.AppImage";
@@ -33,36 +33,10 @@
           hash = "sha256-pjAsfc4QnaFiuVzpcM8SdcOHLUWRWmWTse2+YwJRT+4=";
         };
       };
-
-      # fix scripts using realpath
-      # See: https://github.com/NixOS/nixpkgs/issues/186570#issuecomment-1627797219
-      realpathWrap = { name, package }: pkgs.writeScriptBin name ''
-        #! ${pkgs.bash}/bin/bash
-        args=()
-        for a in "$@"; do
-          if [ -e "$a" ]; then
-            a="$(realpath "$a")"
-          fi
-          args+=("$a")
-        done
-        exec "${package}/bin/${name}" "''${args[@]}"
-      '';
     in
     {
       packages.x86_64-linux = {
-
-        cura = realpathWrap {
-          name = "cura5";
-          package = cura5;
-        };
-        creality-print = realpathWrap {
-          name = "creality-print";
-          package = creality-print;
-        };
-        prusaslicer = realpathWrap {
-          name = "prusaslicer";
-          package = prusaslicer;
-        };
+        inherit cura creality-print prusaslicer;
       };
       formatter.x86_64-linux = pkgs.nixpkgs-fmt;
     };
