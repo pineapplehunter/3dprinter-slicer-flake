@@ -7,14 +7,38 @@
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
 
-      cura = pkgs.appimageTools.wrapType2 rec {
-        name = "cura";
-        version = "5.6.0";
-        src = pkgs.fetchurl {
-          url = "https://github.com/Ultimaker/Cura/releases/download/${version}/UltiMaker-Cura-${version}-linux-X64.AppImage";
-          hash = "sha256-EHiWoNpLKHPzv6rZrtNgEr7y//iVcRYeV/TaCn8QpEA=";
+      cura =
+        let
+          version = "5.6.0";
+          icon = pkgs.fetchurl {
+            url = "https://github.com/Ultimaker/Cura/blob/${version}/resources/images/cura-icon.png";
+            hash = "sha256-YtDcH1piFeWgu/xOvvH8wumECUOcHX5FHnoo0jgTSA4=";
+          };
+          cura-wrapped = pkgs.appimageTools.wrapType2 {
+            name = "cura";
+            src = pkgs.fetchurl {
+              url = "https://github.com/Ultimaker/Cura/releases/download/${version}/UltiMaker-Cura-${version}-linux-X64.AppImage";
+              hash = "sha256-EHiWoNpLKHPzv6rZrtNgEr7y//iVcRYeV/TaCn8QpEA=";
+            };
+          };
+          cura-desktop = pkgs.writeTextDir "share/applications/cura.desktop" ''
+            [Desktop Entry]
+            Version=${version}
+            Type=Application
+            Name=Cura
+            Exec=${cura-wrapped}/bin/cura;
+            Icon=${icon}
+            StartupWMClass=AppRun
+          '';
+        in
+        pkgs.symlinkJoin {
+          inherit (cura-wrapped) pname name;
+          inherit version;
+          paths = [ cura-wrapped cura-desktop ];
+          passAsFile = [ "desktopEntry" ];
+          passthru = { inherit cura-wrapped; };
         };
-      };
+
 
       creality-print = pkgs.appimageTools.wrapType2 {
         name = "creality-print";
@@ -27,10 +51,10 @@
 
       prusaslicer = pkgs.appimageTools.wrapType2 {
         name = "prusaslicer";
-        version = "2.7.0";
+        version = "2.7.1";
         src = pkgs.fetchurl {
-          url = "https://github.com/prusa3d/PrusaSlicer/releases/download/version_2.7.0/PrusaSlicer-2.7.0+linux-x64-GTK3-202311231454.AppImage";
-          hash = "sha256-pjAsfc4QnaFiuVzpcM8SdcOHLUWRWmWTse2+YwJRT+4=";
+          url = "https://github.com/prusa3d/PrusaSlicer/releases/download/version_2.7.1/PrusaSlicer-2.7.1+linux-x64-GTK3-202312121425.AppImage";
+          hash = "sha256-HacdVkqFagts0Uo2MLqn0999NvZL/aKtl9nSVlfQkG8=";
         };
       };
     in
