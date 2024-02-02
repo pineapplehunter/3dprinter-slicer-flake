@@ -11,8 +11,9 @@
         let
           version = "5.6.0";
           icon = pkgs.fetchurl {
-            url = "https://github.com/Ultimaker/Cura/blob/${version}/resources/images/cura-icon.png";
-            hash = "sha256-YtDcH1piFeWgu/xOvvH8wumECUOcHX5FHnoo0jgTSA4=";
+            name = "cura-icon.png";
+            url = "https://github.com/Ultimaker/Cura/blob/${version}/resources/images/cura-icon.png?raw=true";
+            hash = "sha256-4M8a6Ppz8zJu0F9iMSN1v4MTno5DVsg3A3DggPzinyw=";
           };
           cura-wrapped = pkgs.appimageTools.wrapType2 {
             name = "cura";
