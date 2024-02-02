@@ -23,12 +23,12 @@
           };
           cura-desktop = pkgs.writeTextDir "share/applications/cura.desktop" ''
             [Desktop Entry]
-            Version=${version}
+            Version=1
             Type=Application
             Name=Cura
-            Exec=${cura-wrapped}/bin/cura;
+            Terminal=false
+            Exec=${cura-wrapped}/bin/cura
             Icon=${icon}
-            StartupWMClass=AppRun
           '';
         in
         pkgs.symlinkJoin {
